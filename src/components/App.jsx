@@ -6,7 +6,7 @@ import s from './App.module.scss';
 
 export class App extends Component {
   state = {
-    contacts: [
+    contacts: JSON.parse(localStorage.getItem('contacts')) ?? [
       { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
       { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
       { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
@@ -14,6 +14,19 @@ export class App extends Component {
     ],
     filter: '',
   };
+
+  componentDidMount() {
+    if (JSON.parse(localStorage.getItem('contacts'))) {
+      this.setState({ contacts: JSON.parse(localStorage.getItem('contacts')) });
+    }
+  }
+
+  componentDidUpdate(_, prevState) {
+    if (prevState.contacts !== this.state.contacts) {
+      const stringifiedContacts = JSON.stringify(this.state.contacts);
+      localStorage.setItem('contacts', stringifiedContacts);
+    }
+  }
 
   addContact = contact => {
     if (this.state.contacts.some(item => item.name === contact.name)) {
